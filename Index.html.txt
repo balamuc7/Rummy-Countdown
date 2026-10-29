@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100900">
+<title>REMY CHICHIȚA — Countdown</title>
+<style>
+:root{color-scheme:dark;--gold:#ffd21a;--white:#fff9ed}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at top,#4a2109 0%,#160b05 45%,#030202 100%);color:var(--white);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.card{width:min(720px,100%);text-align:center;padding:clamp(24px,5vw,48px);border:2px solid #ffc400;border-radius:28px;background:linear-gradient(160deg,rgba(37,17,5,.97),rgba(5,3,2,.99));box-shadow:0 0 24px #ffb70044,inset 0 0 35px #ffb7000e}
+.crown{font-size:38px;color:var(--gold);line-height:1}
+h1{margin:10px 0 0;font-size:clamp(2.4rem,9vw,5rem);font-weight:1000;line-height:.98;letter-spacing:.015em;text-shadow:0 0 18px #ffb70033}
+h1 span{display:block;color:var(--gold)}
+.sub{margin:18px 0 28px;color:#f4dca8;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:.82rem}
+.timer{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 auto 25px}
+.unit{padding:18px 4px 14px;border:1px solid #7d4c12;border-radius:14px;background:#090502}
+.num{font-variant-numeric:tabular-nums;font-size:clamp(1.8rem,7.5vw,4rem);font-weight:950;line-height:1;color:white;text-shadow:0 0 14px #ffb70055}
+.label{margin-top:9px;font-size:clamp(.55rem,2vw,.78rem);color:#f7d786;font-weight:850;letter-spacing:.06em}
+.goal{font-size:clamp(1.2rem,4vw,2rem);font-weight:900;margin:8px 0 4px}.goal em{color:var(--gold);font-style:normal}
+.foot{margin-top:22px;color:#c7ae88;font-size:.8rem}
+.done{color:var(--gold);font-size:clamp(1.5rem,5vw,2.5rem);font-weight:1000}
+@media(max-width:430px){.timer{gap:5px}.unit{padding:15px 2px 12px}}
+</style>
+</head>
+<body>
+<main class="card">
+<div class="crown">♛</div>
+<h1>REMY <span>CHICHIȚA</span></h1>
+<div class="sub">Vineri · ora 18:00 · rummy cu băieții</div>
+<section class="timer" aria-label="Numărătoare inversă">
+<div class="unit"><div class="num" id="days">00</div><div class="label">ZILE</div></div>
+<div class="unit"><div class="num" id="hours">00</div><div class="label">ORE</div></div>
+<div class="unit"><div class="num" id="minutes">00</div><div class="label">MINUTE</div></div>
+<div class="unit"><div class="num" id="seconds">00</div><div class="label">SECUNDE</div></div>
+</section>
+<div class="goal">Să câștigăm <em>„chichița”!</em> 🃏🏆</div>
+<div id="status" class="foot">Timer live — se actualizează automat în fiecare secundă.</div>
+</main>
+<script>
+// Ora de iarnă în România: EET = UTC+2
+const target = new Date("2026-10-30T18:00:00+02:00").getTime();
+const pad = n => String(n).padStart(2, "0");
+let intervalId = null;
+
+function update() {
+  let diff = target - Date.now();
+
+  if (diff <= 0) {
+    ["days", "hours", "minutes", "seconds"].forEach(id => {
+      document.getElementById(id).textContent = "00";
+    });
+    document.getElementById("status").innerHTML =
+      '<div class="done">A ÎNCEPUT RUMMY-UL! 🃏</div>';
+    if (intervalId) clearInterval(intervalId);
+    return;
+  }
+
+  const days = Math.floor(diff / 86400000);
+  diff %= 86400000;
+  const hours = Math.floor(diff / 3600000);
+  diff %= 3600000;
+  const minutes = Math.floor(diff / 60000);
+  diff %= 60000;
+  const seconds = Math.floor(diff / 1000);
+
+  document.getElementById("days").textContent = pad(days);
+  document.getElementById("hours").textContent = pad(hours);
+  document.getElementById("minutes").textContent = pad(minutes);
+  document.getElementById("seconds").textContent = pad(seconds);
+}
+
+update();
+intervalId = setInterval(update, 1000);
+</script>
+</body>
+</html>
